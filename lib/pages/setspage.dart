@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:gamebareru/pages/homepage.dart';
 import 'package:gamebareru/wordset.dart';
-import 'package:quiver/collection.dart';
 
 class SetsPage extends StatefulWidget {
   const SetsPage({super.key});
@@ -12,11 +11,11 @@ class SetsPage extends StatefulWidget {
 }
 
 class _SetsPageState extends State<SetsPage> {
-  List<String> _leftWords = List.empty(growable: true);
-  List<String> _rightWords = List.empty(growable: true);
-  bool _creatingWordSet = false;
-  String _title = 'Untitled';
-  String _description = 'A generic description';
+  TextEditingController _titleController = TextEditingController();
+  TextEditingController _descriptionController = TextEditingController();
+  List<TextEditingController> _termControllers = List.empty(growable: true);
+  List<TextEditingController> _definitionControllers = List.empty(growable: true);
+  int _editingIndex = -1;
 
   void _uploadWordSet() {
     // TODO: Implement uploading via JSON files
@@ -25,35 +24,45 @@ class _SetsPageState extends State<SetsPage> {
 
   void _addWordPair() {
     setState(() {
-      _leftWords.add('');
-      _rightWords.add('');
+      _termControllers.add(TextEditingController());
+      _definitionControllers.add(TextEditingController());
     });
   }
 
   void _saveWordSet() {
-    HashBiMap<String, String> wordPairs = HashBiMap();
-
-    for (int i = 0; i < _leftWords.length; i++) {
-      wordPairs[_leftWords[i]] = _rightWords[i];
-    }
-
+    WordSet wordSet = WordSet(_titleController.text == '' ? 'Untitled' : _titleController.text,
+        _descriptionController.text == '' ? 'A generic description' : _descriptionController.text,
+        List.generate(_termControllers.length, (int index) => _termControllers[index].text),
+        List.generate(_definitionControllers.length, (int index) => _definitionControllers[index].text));
     setState(() {
-      HomePage.wordSets.add(WordSet(_title, _description, wordPairs));
-      _leftWords = List.empty(growable: true);
-      _rightWords = List.empty(growable: true);
-      _title = 'Untitled';
-      _description = 'A generic description';
-      _creatingWordSet = false;
+      if (_editingIndex < HomePage.wordSets.length) {
+        HomePage.wordSets[_editingIndex] = wordSet;
+      } else {
+        HomePage.wordSets.add(wordSet);
+      }
+      _titleController = TextEditingController();
+      _descriptionController = TextEditingController();
+      _termControllers = List.empty(growable: true);
+      _definitionControllers = List.empty(growable: true);
+      _editingIndex = -1;
     });
   }
 
   void _editWordSet(int index) {
-
+    setState(() {
+      _editingIndex = index;
+      _titleController = TextEditingController(text: HomePage.wordSets[_editingIndex].title);
+      _descriptionController = TextEditingController(text: HomePage.wordSets[_editingIndex].description);
+      _termControllers = List.generate(HomePage.wordSets[_editingIndex].terms.length, (int i) =>
+          TextEditingController(text: HomePage.wordSets[_editingIndex].terms[i]));
+      _definitionControllers = List.generate(HomePage.wordSets[_editingIndex].definitions.length, (int i) =>
+          TextEditingController(text: HomePage.wordSets[_editingIndex].definitions[i]));
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    if (_creatingWordSet) {
+    if (_editingIndex != -1) {
       return Scaffold(
         body: Row(
           children: [
@@ -63,10 +72,10 @@ class _SetsPageState extends State<SetsPage> {
                   Card(
                     child: ListTile(
                       title: TextField(
-                        onChanged: (String title) => setState(() => _title = title),
+                        controller: _titleController,
                         decoration: const InputDecoration(
-                            border: OutlineInputBorder(),
-                            labelText: 'Type the set title'
+                          border: OutlineInputBorder(),
+                          labelText: 'Title'
                         ),
                       ),
                     ),
@@ -74,35 +83,42 @@ class _SetsPageState extends State<SetsPage> {
                   Card(
                     child: ListTile(
                       title: TextField(
-                        onChanged: (String description) => setState(() => _description = description),
+                      controller: _descriptionController,
                         decoration: const InputDecoration(
-                            border: OutlineInputBorder(),
-                            labelText: 'Type the set description'
+                          border: OutlineInputBorder(),
+                          labelText: 'Description'
                         ),
                       ),
                     ),
                   )
-                ])..addAll(List.generate(_leftWords.length, (index) => Card(
+                ])..addAll(List.generate(_termControllers.length, (index) => Card(
                   child: Row(
                     children: [
                       Flexible(
                         child: ListTile(
                           title: TextField(
-                            onChanged: (String word) => setState(() => _leftWords[index] = word),
+                            controller: _termControllers[index],
                             decoration: const InputDecoration(
-                                border: OutlineInputBorder(),
-                                labelText: 'Type a word'
+                              border: OutlineInputBorder(),
+                              labelText: 'Term'
                             ),
                           ),
                         ),
                       ),
+                      IconButton(
+                        onPressed: () => setState(() {
+                          _termControllers.removeAt(index);
+                          _definitionControllers.removeAt(index);
+                        }),
+                        icon: const Icon(Icons.highlight_remove)
+                      ),
                       Flexible(
                         child: ListTile(
                           title: TextField(
-                            onChanged: (String word) => setState(() => _rightWords[index] = word),
+                            controller: _definitionControllers[index],
                             decoration: const InputDecoration(
                               border: OutlineInputBorder(),
-                              labelText: 'Type a word'
+                              labelText: 'Definition'
                             ),
                           ),
                         ),
@@ -122,7 +138,7 @@ class _SetsPageState extends State<SetsPage> {
               mini: true,
               child: const Icon(Icons.save),
             ),
-            const SizedBox(height: 4),
+            const SizedBox(height: 4.0),
             FloatingActionButton(
               onPressed: _addWordPair,
               child: const Icon(Icons.add),
@@ -153,7 +169,7 @@ class _SetsPageState extends State<SetsPage> {
           ),
           SpeedDialChild(
             child: const Icon(Icons.add),
-            onTap: () => setState(() => _creatingWordSet = true)
+            onTap: () => setState(() => _editingIndex = HomePage.wordSets.length)
           )
         ],
       ),
