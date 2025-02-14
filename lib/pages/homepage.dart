@@ -5,6 +5,7 @@ import 'package:gamebareru/wordset.dart';
 
 class HomePage extends StatefulWidget {
   static final List<WordSet> wordSets = List.empty(growable: true);
+  static final List<bool> selectedWordSets = List.empty(growable: true);
 
   const HomePage({super.key});
 

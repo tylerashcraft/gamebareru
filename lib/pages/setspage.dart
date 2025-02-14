@@ -155,6 +155,10 @@ class _SetsPageState extends State<SetsPage> {
             leading: const Icon(Icons.abc),
             title: Text(HomePage.wordSets[index].title),
             subtitle: Text(HomePage.wordSets[index].description),
+            trailing: Checkbox(
+              value: HomePage.selectedWordSets[index],
+              onChanged: (bool? value) => setState(() => HomePage.selectedWordSets[index] = value!)
+            ),
             onTap: () => _editWordSet(index),
           )
         )),
@@ -169,7 +173,10 @@ class _SetsPageState extends State<SetsPage> {
           ),
           SpeedDialChild(
             child: const Icon(Icons.add),
-            onTap: () => setState(() => _editingIndex = HomePage.wordSets.length)
+            onTap: () => setState(() {
+              _editingIndex = HomePage.wordSets.length;
+              HomePage.selectedWordSets.add(false);
+            })
           )
         ],
       ),
