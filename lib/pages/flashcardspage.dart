@@ -64,12 +64,13 @@ class _FlashcardsPageState extends State<FlashcardsPage> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           FloatingActionButton(
-              onPressed: () => setState(() {
-                if (_index != 0) {
-                  _index--;
-                }
-              }),
-              child: const Icon(Icons.navigate_before)
+            onPressed: () => setState(() {
+              if (_index != 0) {
+                _index--;
+                _showDefinition = false;
+              }
+            }),
+            child: const Icon(Icons.navigate_before)
           ),
           const SizedBox(width: 4.0),
           FloatingActionButton(
@@ -81,6 +82,7 @@ class _FlashcardsPageState extends State<FlashcardsPage> {
             onPressed: () => setState(() {
               if (_index != _terms.length - 1) {
                 _index++;
+                _showDefinition = false;
               }
             }),
             child: const Icon(Icons.navigate_next),
