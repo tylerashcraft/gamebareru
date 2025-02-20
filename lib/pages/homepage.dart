@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gamebareru/pages/setspage.dart';
 import 'package:gamebareru/pages/flashcardspage.dart';
+import 'package:gamebareru/pages/testpage.dart';
 import 'package:gamebareru/wordset.dart';
 
 class HomePage extends StatefulWidget {
@@ -16,13 +17,10 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   final List<Widget> _pages = [
     const SetsPage(),
-    const FlashcardsPage()
+    const FlashcardsPage(),
+    const TestPage()
   ];
   int _navigationRailIndex = 0;
-
-  void onNavigationRailDestinationSelected(int index) {
-    setState(() => _navigationRailIndex = index);
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -30,10 +28,11 @@ class _HomePageState extends State<HomePage> {
       children: [
         NavigationRail(
             selectedIndex: _navigationRailIndex,
-            onDestinationSelected: onNavigationRailDestinationSelected,
+            onDestinationSelected: (index) => setState(() => _navigationRailIndex = index),
             destinations: const [
               NavigationRailDestination(icon: Icon(Icons.book), label: Text('Sets')),
-              NavigationRailDestination(icon: Icon(Icons.style), label: Text('Flashcards'))
+              NavigationRailDestination(icon: Icon(Icons.style), label: Text('Flashcards')),
+              NavigationRailDestination(icon: Icon(Icons.edit_document), label: Text('Test'))
             ]
         ),
         Flexible(child: _pages[_navigationRailIndex])
