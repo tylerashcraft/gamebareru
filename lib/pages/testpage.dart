@@ -2,6 +2,7 @@ import 'dart:collection';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:gamebareru/questions/free_response_question.dart';
 import 'package:gamebareru/questions/multiple_choice_question.dart';
 import 'package:gamebareru/questions/question.dart';
 import 'package:gamebareru/pages/homepage.dart';
@@ -17,6 +18,7 @@ class _TestPageState extends State<TestPage> {
   final HashMap<String, String> _map = HashMap();
   List<Question> _questions = List.empty(growable: true);
   int _multipleChoiceQuestionsCount = 0;
+  int _freeResponseQuestionsCount = 0;
   int _score = -1;
 
   @override
@@ -50,7 +52,11 @@ class _TestPageState extends State<TestPage> {
     List<String> terms = List.of(_map.keys);
     List<String> definitions = List.of(_map.values);
 
-    for (int i = 0; i < _multipleChoiceQuestionsCount && terms.isNotEmpty; i++) {
+    for (int i = 0; i < _multipleChoiceQuestionsCount; i++) {
+      if (terms.isEmpty) {
+        terms = List.of(_map.keys);
+      }
+
       String term = terms.removeAt(random.nextInt(terms.length));
       String definition = _map[term]!;
       List<String> answerChoices = List.empty(growable: true);
@@ -68,6 +74,15 @@ class _TestPageState extends State<TestPage> {
       definitions.add(definition);
 
       _questions.add(MultipleChoiceQuestion(term, definition, answerChoices));
+    }
+
+    for (int i = 0; i < _freeResponseQuestionsCount; i++) {
+      if (terms.isEmpty) {
+        terms = List.of(_map.keys);
+      }
+
+      String term = terms.removeAt(random.nextInt(terms.length));
+      _questions.add(FreeResponseQuestion(term, _map[term]!));
     }
 
     setState(() {});
@@ -99,6 +114,15 @@ class _TestPageState extends State<TestPage> {
                           border: OutlineInputBorder()
                         ),
                       ),
+                      const SizedBox(height: 8.0),
+                      TextField(
+                        keyboardType: TextInputType.number,
+                        onChanged: (String input) => _freeResponseQuestionsCount = int.tryParse(input) ?? 0,
+                        decoration: const InputDecoration(
+                          labelText: 'Number of Free Response Questions',
+                          border: OutlineInputBorder()
+                        ),
+                      ),
                     ],
                   ),
                 ),
@@ -117,8 +141,10 @@ class _TestPageState extends State<TestPage> {
           )
         ],
       ),
-      body: ListView(
-        children: _questions,
+      body: ListView.separated(
+        itemCount: _questions.length,
+        itemBuilder: (BuildContext context, int index) => _questions[index],
+        separatorBuilder: (BuildContext context, int index) => const SizedBox(height: 8.0),
       ),
       floatingActionButton: ElevatedButton(
         onPressed: submit,

@@ -9,7 +9,7 @@ class FlashcardsPage extends StatefulWidget {
 }
 
 class _FlashcardsPageState extends State<FlashcardsPage> {
-  final List<MapEntry<String, String>> wordSet = List.empty(growable: true);
+  final List<MapEntry<String, String>> _wordSet = List.empty(growable: true);
   int _index = 0;
   bool _showDefinition = false;
 
@@ -19,14 +19,14 @@ class _FlashcardsPageState extends State<FlashcardsPage> {
 
     for (int i = 0; i < HomePage.selectedWordSets.length; i++) {
       if (HomePage.selectedWordSets[i]) {
-        wordSet.addAll(HomePage.wordSets[i].map.entries);
+        _wordSet.addAll(HomePage.wordSets[i].map.entries);
       }
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    if (wordSet.isEmpty) {
+    if (_wordSet.isEmpty) {
       return const Scaffold(
         body: Center(
           child: Text('Please select a word set with terms and definitions')
@@ -40,7 +40,7 @@ class _FlashcardsPageState extends State<FlashcardsPage> {
         child: Card(
           child: Center(
             child: Text(
-              _showDefinition ? wordSet[_index].value : wordSet[_index].key,
+              _showDefinition ? _wordSet[_index].value : _wordSet[_index].key,
               style: TextStyle(
                 fontSize: MediaQuery.sizeOf(context).longestSide / 20
               ),
@@ -62,13 +62,13 @@ class _FlashcardsPageState extends State<FlashcardsPage> {
           ),
           const SizedBox(width: 4.0),
           FloatingActionButton(
-            onPressed: () => setState(() => wordSet.shuffle()),
+            onPressed: () => setState(() => _wordSet.shuffle()),
             child: const Icon(Icons.shuffle),
           ),
           const SizedBox(width: 4.0),
           FloatingActionButton(
             onPressed: () => setState(() {
-              if (_index != wordSet.length - 1) {
+              if (_index != _wordSet.length - 1) {
                 _index++;
                 _showDefinition = false;
               }
