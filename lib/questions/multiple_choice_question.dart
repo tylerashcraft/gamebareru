@@ -26,7 +26,8 @@ class _MultipleChoiceQuestionState extends State<MultipleChoiceQuestion> {
     widget.showAnswerController.addListener(() => setState(() {}));
 
     return Card(
-      color: widget.showAnswerController.value ? widget.isCorrect() ? Colors.green : Colors.red : Theme.of(context).cardColor,
+      color: widget.showAnswerController.value ? widget.isCorrect() ? Colors.green[100] : Colors.red[100] : Theme.of
+        (context).cardColor,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
@@ -50,8 +51,11 @@ class _MultipleChoiceQuestionState extends State<MultipleChoiceQuestion> {
           ...List.generate(widget._answerChoices.length, (int index) => RadioListTile<String>(
             value: widget._answerChoices[index],
             groupValue: widget._selectedAnswerController.value,
-            onChanged: (String? selectedAnswer) => setState(() => widget._selectedAnswerController.value =
-                selectedAnswer ?? ''),
+            onChanged: (String? selectedAnswer) {
+              if (!widget.showAnswerController.value) {
+                setState(() => widget._selectedAnswerController.value = selectedAnswer ?? '');
+              }
+            },
             title: Text(widget._answerChoices[index]),
           ))
         ],

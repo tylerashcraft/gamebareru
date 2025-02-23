@@ -1,3 +1,4 @@
+import 'dart:collection';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
@@ -13,10 +14,10 @@ class TestPage extends StatefulWidget {
 }
 
 class _TestPageState extends State<TestPage> {
-  final List<String> _terms = List.empty(growable: true);
-  final List<String> _definitions = List.empty(growable: true);
+  final HashMap<String, String> _map = HashMap();
   List<Question> _questions = List.empty(growable: true);
   int _multipleChoiceQuestionsCount = 0;
+  int _score = -1;
 
   @override
   void initState() {
@@ -24,39 +25,49 @@ class _TestPageState extends State<TestPage> {
 
     for (int i = 0; i < HomePage.selectedWordSets.length; i++) {
       if (HomePage.selectedWordSets[i]) {
-        _terms.addAll(HomePage.wordSets[i].terms);
-        _definitions.addAll(HomePage.wordSets[i].definitions);
+        _map.addAll(HomePage.wordSets[i].map);
       }
     }
   }
 
   void submit() {
+    _score = 0;
     for (Question question in _questions) {
       question.showAnswerController.value = true;
+      if (question.isCorrect()) {
+        _score++;
+      }
     }
+    
+    setState(() {});
   }
 
   void generateQuestions() {
-    // TODO convert to bidirectional hashmap and fix bug where the first choice is always the answer because of not
-    // TODO reinserting at the right index
-
+    _score = -1;
     _questions = List.empty(growable: true);
 
     Random random = Random();
-    List<String> terms = List.of(_terms);
-    List<String> definitions = List.of(_definitions);
+    List<String> terms = List.of(_map.keys);
+    List<String> definitions = List.of(_map.values);
 
     for (int i = 0; i < _multipleChoiceQuestionsCount && terms.isNotEmpty; i++) {
-      int index = random.nextInt(terms.length);
-      String definition = definitions.removeAt(index);
-
+      String term = terms.removeAt(random.nextInt(terms.length));
+      String definition = _map[term]!;
       List<String> answerChoices = List.empty(growable: true);
+
+      // Move the correct answer to answer choices
       answerChoices.add(definition);
+      definitions.remove(definition);
+
+      // Pick 3 other answer choices
       definitions.shuffle(random);
       answerChoices.addAll(definitions.take(3));
+      answerChoices.shuffle(random);
 
-      _questions.add(MultipleChoiceQuestion(terms.removeAt(index), definition, answerChoices));
+      // Rebuild definitions
       definitions.add(definition);
+
+      _questions.add(MultipleChoiceQuestion(term, definition, answerChoices));
     }
 
     setState(() {});
@@ -68,7 +79,7 @@ class _TestPageState extends State<TestPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Test'),
+        title: Text('Test ${_score == -1 ? '' : '$_score/${_questions.length}'}'),
         actions: [
           IconButton(
             onPressed: () => showDialog(

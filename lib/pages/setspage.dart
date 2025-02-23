@@ -53,10 +53,13 @@ class _SetsPageState extends State<SetsPage> {
       _editingIndex = index;
       _titleController = TextEditingController(text: HomePage.wordSets[_editingIndex].title);
       _descriptionController = TextEditingController(text: HomePage.wordSets[_editingIndex].description);
-      _termControllers = List.generate(HomePage.wordSets[_editingIndex].terms.length, (int i) =>
-          TextEditingController(text: HomePage.wordSets[_editingIndex].terms[i]));
-      _definitionControllers = List.generate(HomePage.wordSets[_editingIndex].definitions.length, (int i) =>
-          TextEditingController(text: HomePage.wordSets[_editingIndex].definitions[i]));
+      _termControllers = List.empty(growable: true);
+      _definitionControllers = List.empty(growable: true);
+
+      HomePage.wordSets[_editingIndex].map.forEach((String key, String value) {
+        _termControllers.add(TextEditingController(text: key));
+        _definitionControllers.add(TextEditingController(text: value));
+      });
     });
   }
 

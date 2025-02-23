@@ -22,8 +22,8 @@ class _FlashcardsPageState extends State<FlashcardsPage> {
 
     for (int i = 0; i < HomePage.selectedWordSets.length; i++) {
       if (HomePage.selectedWordSets[i]) {
-        _terms.addAll(HomePage.wordSets[i].terms);
-        _definitions.addAll(HomePage.wordSets[i].definitions);
+        _terms.addAll(HomePage.wordSets[i].map.keys);
+        _definitions.addAll(HomePage.wordSets[i].map.values);
       }
     }
   }
