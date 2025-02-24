@@ -22,9 +22,17 @@ class MultipleChoiceQuestion extends Question {
 
 class _MultipleChoiceQuestionState extends State<MultipleChoiceQuestion> {
   @override
-  Widget build(BuildContext context) {
-    widget.showAnswerController.addListener(() => setState(() {}));
+  void initState() {
+    super.initState();
+    widget.showAnswerController.addListener(() {
+      if (mounted) {
+        setState(() {});
+      }
+    });
+  }
 
+  @override
+  Widget build(BuildContext context) {
     return Card(
       color: widget.showAnswerController.value ? widget.isCorrect() ? Colors.green[100] : Colors.red[100] : Theme.of
         (context).cardColor,
