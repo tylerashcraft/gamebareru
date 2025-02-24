@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
-import 'package:gamebareru/pages/homepage.dart';
-import 'package:gamebareru/wordset.dart';
+import 'package:ganbareru/pages/homepage.dart';
+import 'package:ganbareru/wordset.dart';
 
 class SetsPage extends StatefulWidget {
   const SetsPage({super.key});

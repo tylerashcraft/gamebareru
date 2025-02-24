@@ -1,4 +1,4 @@
-package com.example.gamebareru;
+package com.example.ganbareru;
 
 import io.flutter.embedding.android.FlutterActivity;
 

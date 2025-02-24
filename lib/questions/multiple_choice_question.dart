@@ -1,4 +1,4 @@
-import 'package:gamebareru/questions/question.dart';
+import 'package:ganbareru/questions/question.dart';
 import 'package:flutter/material.dart';
 
 class MultipleChoiceQuestion extends Question {

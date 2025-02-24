@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:gamebareru/pages/homepage.dart';
+import 'package:ganbareru/pages/homepage.dart';
 
 void main() {
   runApp(const MyApp());

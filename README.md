@@ -1,2 +1,2 @@
-# gamebareru
-がめばれる (gamebareru) is a tool for learning and studying Japanese.
+# ganbareru
+がめばれる (ganbareru) is a tool for learning and studying Japanese.

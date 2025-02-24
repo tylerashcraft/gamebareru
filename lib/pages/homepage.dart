@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:gamebareru/pages/setspage.dart';
-import 'package:gamebareru/pages/flashcardspage.dart';
-import 'package:gamebareru/pages/testpage.dart';
-import 'package:gamebareru/wordset.dart';
+import 'package:ganbareru/pages/setspage.dart';
+import 'package:ganbareru/pages/flashcardspage.dart';
+import 'package:ganbareru/pages/testpage.dart';
+import 'package:ganbareru/wordset.dart';
 
 class HomePage extends StatefulWidget {
   static final List<WordSet> wordSets = List.empty(growable: true);

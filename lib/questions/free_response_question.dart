@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:gamebareru/questions/question.dart';
+import 'package:ganbareru/questions/question.dart';
 
 class FreeResponseQuestion extends Question {
   final String _term;

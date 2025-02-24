@@ -2,10 +2,10 @@ import 'dart:collection';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:gamebareru/questions/free_response_question.dart';
-import 'package:gamebareru/questions/multiple_choice_question.dart';
-import 'package:gamebareru/questions/question.dart';
-import 'package:gamebareru/pages/homepage.dart';
+import 'package:ganbareru/questions/free_response_question.dart';
+import 'package:ganbareru/questions/multiple_choice_question.dart';
+import 'package:ganbareru/questions/question.dart';
+import 'package:ganbareru/pages/homepage.dart';
 
 class TestPage extends StatefulWidget {
   const TestPage({super.key});
