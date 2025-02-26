@@ -13,9 +13,10 @@ class SetsPage extends StatefulWidget {
 class _SetsPageState extends State<SetsPage> {
   TextEditingController _titleController = TextEditingController();
   TextEditingController _descriptionController = TextEditingController();
-  List<TextEditingController> _termControllers = List.empty(growable: true);
-  List<TextEditingController> _definitionControllers = List.empty(growable: true);
+  List<TextEditingController> _termControllers = List.of([TextEditingController()], growable: true);
+  List<TextEditingController> _definitionControllers = List.of([TextEditingController()], growable: true);
   int _editingIndex = -1;
+  bool _isAllSelected = false;
 
   void _uploadWordSet() {
     // TODO: Implement uploading via JSON files
@@ -32,8 +33,8 @@ class _SetsPageState extends State<SetsPage> {
   void _saveWordSet() {
     WordSet wordSet = WordSet(_titleController.text == '' ? 'Untitled' : _titleController.text,
         _descriptionController.text == '' ? 'A generic description' : _descriptionController.text,
-        List.generate(_termControllers.length, (int index) => _termControllers[index].text),
-        List.generate(_definitionControllers.length, (int index) => _definitionControllers[index].text));
+        List.generate(_termControllers.length - 1, (int index) => _termControllers[index].text),
+        List.generate(_definitionControllers.length - 1, (int index) => _definitionControllers[index].text));
     setState(() {
       if (_editingIndex < HomePage.wordSets.length) {
         HomePage.wordSets[_editingIndex] = wordSet;
@@ -42,8 +43,8 @@ class _SetsPageState extends State<SetsPage> {
       }
       _titleController = TextEditingController();
       _descriptionController = TextEditingController();
-      _termControllers = List.empty(growable: true);
-      _definitionControllers = List.empty(growable: true);
+      _termControllers = List.of([TextEditingController()], growable: true);
+      _definitionControllers = List.of([TextEditingController()], growable: true);
       _editingIndex = -1;
     });
   }
@@ -60,6 +61,8 @@ class _SetsPageState extends State<SetsPage> {
         _termControllers.add(TextEditingController(text: key));
         _definitionControllers.add(TextEditingController(text: value));
       });
+      _termControllers.add(TextEditingController());
+      _definitionControllers.add(TextEditingController());
     });
   }
 
@@ -105,6 +108,11 @@ class _SetsPageState extends State<SetsPage> {
                               border: OutlineInputBorder(),
                               labelText: 'Term'
                             ),
+                            onChanged: (String input) {
+                              if (index == _termControllers.length - 1) {
+                                _addWordPair();
+                              }
+                            },
                           ),
                         ),
                       ),
@@ -123,6 +131,11 @@ class _SetsPageState extends State<SetsPage> {
                               border: OutlineInputBorder(),
                               labelText: 'Definition'
                             ),
+                            onChanged: (String input) {
+                              if (index == _termControllers.length - 1) {
+                                _addWordPair();
+                              }
+                            },
                           ),
                         ),
                       ),
@@ -152,6 +165,20 @@ class _SetsPageState extends State<SetsPage> {
     }
 
     return Scaffold(
+      appBar: AppBar(
+        title: const Text('Sets'),
+        actions: [
+          Checkbox(
+            value: _isAllSelected,
+            onChanged: (bool? value) => setState(() {
+              _isAllSelected = value!;
+              for (int i = 0; i < HomePage.selectedWordSets.length; i++) {
+                HomePage.selectedWordSets[i] = value;
+              }
+            })
+          )
+        ],
+      ),
       body: ListView(
         children: List.generate(HomePage.wordSets.length, (int index) => Card(
           child: ListTile(
@@ -160,7 +187,12 @@ class _SetsPageState extends State<SetsPage> {
             subtitle: Text(HomePage.wordSets[index].description),
             trailing: Checkbox(
               value: HomePage.selectedWordSets[index],
-              onChanged: (bool? value) => setState(() => HomePage.selectedWordSets[index] = value!)
+              onChanged: (bool? value) => setState(() {
+                HomePage.selectedWordSets[index] = value!;
+                if (!value) {
+                  _isAllSelected = false;
+                }
+              })
             ),
             onTap: () => _editWordSet(index),
           )
