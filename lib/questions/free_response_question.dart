@@ -8,6 +8,7 @@ class FreeResponseQuestion extends Question {
   
   FreeResponseQuestion(this._term, this._definition, {super.key, super.showAnswerController});
 
+  // TODO: Support equivalence through romanji, hiragana, and kanji (食べます = たべます = tabemasu)
   @override
   bool isCorrect() {
     return _controller.text == _definition;
@@ -19,17 +20,13 @@ class FreeResponseQuestion extends Question {
 
 class _FreeResponseQuestionState extends State<FreeResponseQuestion> {
   @override
-  void initState() {
-    super.initState();
+  Widget build(BuildContext context) {
     widget.showAnswerController.addListener(() {
       if (mounted) {
         setState(() {});
       }
     });
-  }
 
-  @override
-  Widget build(BuildContext context) {
     return Card(
       color: widget.showAnswerController.value ? widget.isCorrect() ? Colors.green[100] : Colors.red[100] : Theme.of
         (context).cardColor,
@@ -43,9 +40,9 @@ class _FreeResponseQuestionState extends State<FreeResponseQuestion> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text(
-                  widget._term,
+                  widget._term + (widget.showAnswerController.value ? ' - ${widget._definition}' : ''),
                   style: const TextStyle(
-                      fontSize: 48
+                    fontSize: 48
                   ),
                 ),
                 if (widget.showAnswerController.value)

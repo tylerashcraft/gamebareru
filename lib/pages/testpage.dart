@@ -32,7 +32,7 @@ class _TestPageState extends State<TestPage> {
     }
   }
 
-  void submit() {
+  void _submit() {
     _score = 0;
     for (Question question in _questions) {
       question.showAnswerController.value = true;
@@ -44,7 +44,7 @@ class _TestPageState extends State<TestPage> {
     setState(() {});
   }
 
-  void generateQuestions() {
+  void _generateQuestions() {
     _score = -1;
     _questions = List.empty(growable: true);
 
@@ -130,7 +130,7 @@ class _TestPageState extends State<TestPage> {
                   TextButton(
                     onPressed: () {
                       Navigator.pop(context, 'Generate');
-                      generateQuestions();
+                      _generateQuestions();
                     },
                     child: const Text('Generate')
                   )
@@ -147,7 +147,7 @@ class _TestPageState extends State<TestPage> {
         separatorBuilder: (BuildContext context, int index) => const SizedBox(height: 8.0),
       ),
       floatingActionButton: ElevatedButton(
-        onPressed: submit,
+        onPressed: _submit,
         child: const Text('Submit'),
       ),
     );

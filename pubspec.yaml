@@ -37,6 +37,7 @@ dependencies:
   cupertino_icons: ^1.0.8
   flutter_speed_dial: ^7.0.0
   quiver: ^3.2.2
+  kana_kit: ^2.1.1
 
 dev_dependencies:
   flutter_test:

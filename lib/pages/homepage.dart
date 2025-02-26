@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ganbareru/pages/conjugationpage.dart';
 import 'package:ganbareru/pages/setspage.dart';
 import 'package:ganbareru/pages/flashcardspage.dart';
 import 'package:ganbareru/pages/testpage.dart';
@@ -15,10 +16,11 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  final List<Widget> _pages = [
-    const SetsPage(),
-    const FlashcardsPage(),
-    const TestPage()
+  final List<Widget> _pages = const [
+    SetsPage(),
+    FlashcardsPage(),
+    TestPage(),
+    ConjugationPage()
   ];
   int _navigationRailIndex = 0;
 
@@ -32,7 +34,8 @@ class _HomePageState extends State<HomePage> {
             destinations: const [
               NavigationRailDestination(icon: Icon(Icons.book), label: Text('Sets')),
               NavigationRailDestination(icon: Icon(Icons.style), label: Text('Flashcards')),
-              NavigationRailDestination(icon: Icon(Icons.edit_document), label: Text('Test'))
+              NavigationRailDestination(icon: Icon(Icons.edit_document), label: Text('Test')),
+              NavigationRailDestination(icon: Icon(Icons.sync_alt), label: Text('Conjugations'))
             ]
         ),
         Flexible(child: _pages[_navigationRailIndex])
